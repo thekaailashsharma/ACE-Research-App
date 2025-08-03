@@ -20,7 +20,7 @@ class OpenAlexService {
             })
         }
         install(Logging) {
-            level = LogLevel.INFO
+            level = LogLevel.ALL
         }
     }
 
@@ -28,20 +28,54 @@ class OpenAlexService {
 
     suspend fun searchWorks(
         query: String,
+        filter: String? = null,
         page: Int = 1,
         perPage: Int = 25
     ): OpenAlexResponse {
-        return client.get("$baseUrl/works") {
-            url {
-                parameters.append("search", query)
-                parameters.append("page", page.toString())
-                parameters.append("per-page", perPage.toString())
-            }
-        }.body()
+        println("\nSearching OpenAlex works:")
+        println("Query: '$query'")
+        println("Filter: $filter")
+        println("Page: $page")
+        println("Per page: $perPage")
+        
+        try {
+            val response = client.get("$baseUrl/works") {
+                url {
+                    if (query.isNotEmpty()) {
+                        parameters.append("search", query)
+                    }
+                    if (filter != null) {
+                        parameters.append("filter", filter)
+                    }
+                    parameters.append("page", page.toString())
+                    parameters.append("per-page", perPage.toString())
+                }
+            }.body<OpenAlexResponse>()
+            
+            println("OpenAlex API response:")
+            println("Total results: ${response.meta.count}")
+            println("Results in this page: ${response.results.size}")
+            println("First few article IDs: ${response.results.take(3).map { it.id }}")
+            
+            return response
+        } catch (e: Exception) {
+            println("Error searching OpenAlex works: ${e.message}")
+            e.printStackTrace()
+            throw e
+        }
     }
 
     suspend fun getWorkById(id: String): OpenAlexWork {
-        return client.get("$baseUrl/works/$id").body()
+        println("\nFetching OpenAlex work by ID: $id")
+        try {
+            val work = client.get("$baseUrl/works/$id").body<OpenAlexWork>()
+            println("Successfully fetched work: ${work.title}")
+            return work
+        } catch (e: Exception) {
+            println("Error fetching work $id: ${e.message}")
+            e.printStackTrace()
+            throw e
+        }
     }
 
     suspend fun getWorksByAuthor(
@@ -49,13 +83,23 @@ class OpenAlexService {
         page: Int = 1,
         perPage: Int = 25
     ): OpenAlexResponse {
-        return client.get("$baseUrl/works") {
-            url {
-                parameters.append("filter", "author.id:$authorId")
-                parameters.append("page", page.toString())
-                parameters.append("per-page", perPage.toString())
-            }
-        }.body()
+        println("\nFetching works by author: $authorId")
+        try {
+            val response = client.get("$baseUrl/works") {
+                url {
+                    parameters.append("filter", "author.id:$authorId")
+                    parameters.append("page", page.toString())
+                    parameters.append("per-page", perPage.toString())
+                }
+            }.body<OpenAlexResponse>()
+            
+            println("Found ${response.results.size} works for author")
+            return response
+        } catch (e: Exception) {
+            println("Error fetching works for author $authorId: ${e.message}")
+            e.printStackTrace()
+            throw e
+        }
     }
 
     fun close() {

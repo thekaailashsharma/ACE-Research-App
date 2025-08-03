@@ -39,6 +39,18 @@ dependencies {
     implementation(libs.ktor.client.cio)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.client.logging)
+    
+    // Google API
+    implementation(libs.google.api.client)
+    implementation(libs.google.oauth.client.jetty)
+    implementation(libs.google.sheets)
+    
+    // Database
+    implementation(libs.exposed.core)
+    implementation(libs.exposed.dao)
+    implementation(libs.exposed.jdbc)
+    implementation(libs.exposed.java.time)
+    implementation(libs.h2database)
     implementation(libs.ktor.server.content.negotiation)
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.serialization.kotlinx.json)

@@ -8,3 +8,11 @@ jwt:
   domain: "https://jwt-provider-domain/"
   audience: "jwt-audience"
   realm: "ktor sample app"
+
+google:
+  credentials:
+    path: "env/credentials.json"  # Place your service account credentials file here
+  application:
+    name: "Research Article Sync"
+  spreadsheet:
+    id: "1I_062wlhQOP4qjYwIkMTw75t_KacoHtuTaCukc1B-ko"  # Your Google Sheet ID

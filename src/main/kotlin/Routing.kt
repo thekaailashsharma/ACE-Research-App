@@ -28,6 +28,7 @@ import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
 import org.slf4j.event.*
 import routes.openAlexRoutes
+import routes.researchRoutes
 
 fun Application.configureRouting() {
     install(RequestValidation) {
@@ -44,5 +45,12 @@ fun Application.configureRouting() {
         
         // OpenAlex routes
         openAlexRoutes()
+        
+        // Research sync routes
+        researchRoutes(
+            credentialsPath = environment.config.property("google.credentials.path").getString(),
+            applicationName = environment.config.property("google.application.name").getString(),
+            spreadsheetId = environment.config.property("google.spreadsheet.id").getString()
+        )
     }
 }

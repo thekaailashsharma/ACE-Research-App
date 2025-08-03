@@ -18,7 +18,7 @@ fun Route.openAlexRoutes() {
             val page = call.parameters["page"]?.toIntOrNull() ?: 1
             val perPage = call.parameters["perPage"]?.toIntOrNull() ?: 25
 
-            val response = openAlexService.searchWorks(query, page, perPage)
+            val response = openAlexService.searchWorks(query = query, page = page, perPage = perPage)
             call.respond(response)
         }
 
